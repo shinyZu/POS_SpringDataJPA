@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java EE with AJAX</title>
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <style>
+        /*body{*/
+        /*    background-color: #c8d6e5;*/
+        /*}*/
+        #header{
+            background-color: #273c75;
+        }
+
+        #tbl-header{
+            background-color: #34495e;
+        }
+
+    </style>
+</head>
+<body>
+<section id="header" class="container-fluid p-4 text-white">
+    <h1 class="fw-bold ">Manage Customers</h1>
+</section>
+
+<section class="ms-3 pt-3">
+    <div class="row mt-3">
+        <div class="col-4">
+            <div class="input-group pb-3">
+                <input class="form-control" id="searchCusID" placeholder="Search ID" type="text" name="customerID">
+                <button class="btn btn-success text-white" id="btnSearch">Search</button>
+            </div>
+            <form id="customer_form">
+                <div class="mb-3">
+                    <label for="txtCusID">Customer ID</label>
+                    <input class="form-control" id="txtCusID" placeholder="Customer ID" type="text" name="id">
+                </div>
+                <div class="mb-3">
+                    <label for="txtCusName">Customer Name</label>
+                    <input class="form-control" id="txtCusName" placeholder="Customer Name" type="text" name="name">
+                </div>
+                <div class="mb-3">
+                    <label for="txtCusAddress">Customer Address</label>
+                    <input class="form-control" id="txtCusAddress" placeholder="Customer Address" type="text" name="address">
+                </div>
+                <div class="mb-3">
+                    <label for="txtCusSalary">Customer Salary</label>
+                    <input class="form-control" id="txtCusSalary" placeholder="Customer Salary" type="text" name="salary">
+                </div>
+                <div class="mb-3">
+                    <button id="btnSaveCustomer" type="button" class=" btn btn-primary text-white fw-bolder">Save</button>
+                    <button id="btnUpdateCustomer" type="button" class=" btn btn-warning text-white fw-bolder">Update</button>
+                    <button id="btnDeleteCustomer" type="button" class=" btn btn-danger text-white fw-bolder">Delete</button>
+                    <button class="btn btn-success text-white" id="btnGetAll" type="button">Get All</button>
+                    <button class="btn btn-secondary text-white" id="btnClear" type="button">Clear All</button>
+                </div>
+            </form>
+        </div>
+        <div class="col">
+            <table id="tblCustomer" class="table table-bordered table-hover">
+                <thead id="tbl-header" class="text-white">
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Salary</th>
+                </tr>
+                </thead>
+                <tbody id="tblCustomer-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<script src="assets/js/jquery-3.6.0.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+
+<script>
+
+    var reply;
+    var resTxt;
+    var customer;
+
+    loadAllCustomers();
+
+    function clearFields() {
+        $("#searchCusID").val("");
+        $("#txtCusID").val("");
+        $("#txtCusName").val("");
+        $("#txtCusAddress").val("");
+        ($("#txtCusSalary").val(""));
+    }
+
+    function loadAllCustomers() {
+        $("#tblCustomer tbody").empty();
+        $.ajax({
+            // relative path will take the current project's path
+            // url:"customer?option=GETALL",
+            // must give the exact path to the web application
+            // url:"http://localhost:8080/filter/customer?option=GETALL",
+            url:"http://localhost:8080/10_SpringWithMaven_war/api/v1/customer",
+            method:"GET",
+            success: function(resp){
+                resp.forEach(customer => {
+                    let row =
+                        `<tr>
+                                <td>${customer.id}</td>
+                                <td>${customer.name}</td>
+                                <td>${customer.address}</td>
+                                <td>${customer.salary}</td>
+                            </tr>`;
+
+                    $("#tblCustomer tbody").append(row);
+                });
+                selectRowOnClick();
+                clearFields();
+
+            },
+            error: function (ob, textStatus, error) {
+                console.log(ob);
+            }
+        });
+    }
+
+    $("#btnGetAll").click(function (e) {
+        loadAllCustomers();
+    });
+
+    $("#btnClear").click(function (e) {
+        clearFields();
+    });
+
+    function searchCustomer(cusID){
+        $.ajax({
+            // url:"http://localhost:8080/filter/customer?option=SEARCH&customerID="+cusID,
+            url:"http://localhost:8080/10_SpringWithMaven_war/api/v1/customer/"+cusID,
+            method:"GET",
+            success: function(resp){
+                reply = resp;
+                customer = resp.data;
+                console.log(resp);
+                // $("#txtCusID").val(customer.id);
+                // $("#txtCusName").val(customer.name);
+                // $("#txtCusAddress").val(customer.address);
+                // $("#txtCusSalary").val(customer.salary);
+                selectRowOnClick();
+
+            },
+
+            error: function (ob, textStatus, error) {
+                // console.log(ob);
+            }
+        });;
+    }
+
+    /*$("#btnSearch").keyup(function (e) {
+        var cusID = $("#searchCusID").val();
+
+        $("#btnSearch").off("click");
+        $("#btnSearch").click(function (e) {
+            searchCustomer(cusID);
+
+        });
+
+        if (e.key == "Enter") {
+            e.preventDefault();
+            searchCustomer(cusID);
+        }
+    });*/
+
+    // $("#btnSearch").on("keypress", function (e) {
+    //     $("#btnSearch").off("click");
+    //    if (e.key == "Enter"){
+    //        var cusID = $("#searchCusID").val();
+    //        searchCustomer(cusID);
+    //    }
+    // });
+    //
+    $("#btnSearch").click(function (e) {
+        $("#btnSearch").off("keypress");
+        var cusID = $("#searchCusID").val();
+        searchCustomer(cusID);
+    });
+
+
+    $("#btnSaveCustomer").click(function (e) {
+        var formData = $("#customer_form").serialize();
+
+        var id = $("#txtCusID").val();
+        var name = $("#txtCusName").val();
+        var address = $("#txtCusAddress").val();
+        var salary = ($("#txtCusSalary").val());
+
+        $.ajax({
+            // url:"http://localhost:8080/filter/customer",
+            url:"http://localhost:8080/10_SpringWithMaven_war/api/v1/customer",
+            method:"POST",
+            data:formData,
+            success:function(resp){
+                reply = resp;
+                console.log(resp);
+                // if (resp.status == 201) {
+                //     alert("Message : "+resp.message+"\nStatus : "+resp.status);
+                //     loadAllCustomers();
+                //
+                // }
+                // else{
+                //     alert("Message : "+resp.data+"\nStatus : "+resp.status);
+                // }
+
+            },
+            error: function (ob, textStatus, error) {
+                // console.log(ob); 
+            }
+        });
+    });
+
+    $("#btnDeleteCustomer").click(function (e) {
+        var cusID = $("#txtCusID").val();
+
+        $.ajax({
+            url:"http://localhost:8080/10_SpringWithMaven_war/api/v1/customer?id="+cusID,
+            method:"DELETE",
+
+            success:function (resp) {
+                console.log(resp);
+                // if (resp.status == 200) {
+                //     alert("Message : "+resp.message);
+                //     loadAllCustomers();
+                //
+                // }else if(resp.status == 400){
+                //     alert("Message : "+resp.data);
+                //
+                // }else{
+                //     alert("Message : "+resp.data);
+                // }
+            },
+            error: function (ob, textStatus, error) {
+                console.log(ob);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
+    });
+
+    function selectRowOnClick() {
+        $("#tblCustomer-body>tr").click(function (e) {
+            let id = $(this).children(':nth-child(1)').text();
+            let name = $(this).children().eq(1).text();
+            let address = $(this).children(':nth-child(3)').text();
+            let salary = $(this).children().eq(3).text();
+
+            $("#txtCusID").val(id);
+            $("#txtCusName").val(name);
+            $("#txtCusAddress").val(address);
+            $("#txtCusSalary").val(salary);
+        });
+    }
+
+    $("#btnUpdateCustomer").click(function (e) {
+        // JS object
+        var cusObj = {
+            id: $("#txtCusID").val(),
+            name: $("#txtCusName").val(),
+            address: $("#txtCusAddress").val(),
+            salary: $("#txtCusSalary").val()
+        }
+        console.log(cusObj);
+
+        $.ajax({
+            // url:"http://localhost:8080/filter/customer",
+            url:"http://localhost:8080/10_SpringWithMaven_war/api/v1/customer",
+            method:"PUT",
+
+            contentType:"application/json",
+            data : JSON.stringify(cusObj),
+
+            success:function(resp){
+                console.log(resp);
+                // if (resp.status == 200) {
+                //     alert("Message : "+resp.message);
+                //     loadAllCustomers();
+                //
+                // }else if(resp.status == 400){
+                //     alert("Message : "+resp.data);
+                //
+                // }else{
+                //     alert("Message : "+resp.data);
+                // }
+            },
+
+            error: function (ob, textStatus, error) {
+                // console.log(ob);
+            }
+        });
+    });
+
+</script>
+</body>
+</html>
