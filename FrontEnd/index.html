@@ -20,6 +20,7 @@
         }
 
     </style>
+
 </head>
 <body>
 <section id="header" class="container-fluid p-4 text-white">
@@ -82,6 +83,7 @@
 <script>
 
     var reply;
+    var response;
     var resTxt;
     var customer;
 
@@ -98,14 +100,15 @@
     function loadAllCustomers() {
         $("#tblCustomer tbody").empty();
         $.ajax({
-            // relative path will take the current project's path
-            // url:"customer?option=GETALL",
-            // must give the exact path to the web application
-            // url:"http://localhost:8080/filter/customer?option=GETALL",
-            url:"http://localhost:8080/10_SpringWithMaven_war/api/v1/customer",
+            url:"http://localhost:8080/springpos/api/v2/customer",
             method:"GET",
             success: function(resp){
-                resp.forEach(customer => {
+                // reply = resp;
+                // console.log(resp);
+                // console.log(resp.data);
+                // console.log(resp[0].data);
+
+                resp[0].data.forEach(customer => {
                     let row =
                         `<tr>
                                 <td>${customer.id}</td>
@@ -136,18 +139,25 @@
 
     function searchCustomer(cusID){
         $.ajax({
-            // url:"http://localhost:8080/filter/customer?option=SEARCH&customerID="+cusID,
-            url:"http://localhost:8080/10_SpringWithMaven_war/api/v1/customer/"+cusID,
+            url:"http://localhost:8080/springpos/api/v2/customer/"+cusID,
             method:"GET",
             success: function(resp){
-                reply = resp;
-                customer = resp.data;
-                console.log(resp);
-                // $("#txtCusID").val(customer.id);
-                // $("#txtCusName").val(customer.name);
-                // $("#txtCusAddress").val(customer.address);
-                // $("#txtCusSalary").val(customer.salary);
-                selectRowOnClick();
+                // reply = resp;
+                // console.log(resp);
+
+
+                if (resp[0].status == 200) {
+                    customer = resp[0].data;
+                    $("#txtCusID").val(customer.id);
+                    $("#txtCusName").val(customer.name);
+                    $("#txtCusAddress").val(customer.address);
+                    $("#txtCusSalary").val(customer.salary);
+                    selectRowOnClick();
+
+                }else {
+                    alert("Message : "+resp[0].message);
+
+                }
 
             },
 
@@ -172,16 +182,16 @@
         }
     });*/
 
-    // $("#btnSearch").on("keypress", function (e) {
-    //     $("#btnSearch").off("click");
-    //    if (e.key == "Enter"){
-    //        var cusID = $("#searchCusID").val();
-    //        searchCustomer(cusID);
-    //    }
-    // });
-    //
+    $("#searchCusID").on("keypress", function (e) {
+        // $("#btnSearch").off("click");
+       if (e.key == "Enter"){
+           var cusID = $("#searchCusID").val();
+           searchCustomer(cusID);
+       }
+    });
+
     $("#btnSearch").click(function (e) {
-        $("#btnSearch").off("keypress");
+        // $("#btnSearch").off("keypress");
         var cusID = $("#searchCusID").val();
         searchCustomer(cusID);
     });
@@ -196,21 +206,19 @@
         var salary = ($("#txtCusSalary").val());
 
         $.ajax({
-            // url:"http://localhost:8080/filter/customer",
-            url:"http://localhost:8080/10_SpringWithMaven_war/api/v1/customer",
+            url:"http://localhost:8080/springpos/api/v2/customer",
             method:"POST",
             data:formData,
             success:function(resp){
-                reply = resp;
-                console.log(resp);
-                // if (resp.status == 201) {
-                //     alert("Message : "+resp.message+"\nStatus : "+resp.status);
-                //     loadAllCustomers();
-                //
-                // }
-                // else{
-                //     alert("Message : "+resp.data+"\nStatus : "+resp.status);
-                // }
+                response = resp[0];
+                if (response.status == 201) {
+                    alert("Message : "+response.message+"\nStatus : "+response.status);
+                    loadAllCustomers();
+
+                }
+                else{
+                    alert("Message : "+response.message+"\nStatus : "+response.status);
+                }
 
             },
             error: function (ob, textStatus, error) {
@@ -223,21 +231,21 @@
         var cusID = $("#txtCusID").val();
 
         $.ajax({
-            url:"http://localhost:8080/10_SpringWithMaven_war/api/v1/customer?id="+cusID,
+            url:"http://localhost:8080/springpos/api/v2/customer?id="+cusID,
             method:"DELETE",
 
             success:function (resp) {
-                console.log(resp);
-                // if (resp.status == 200) {
-                //     alert("Message : "+resp.message);
-                //     loadAllCustomers();
-                //
-                // }else if(resp.status == 400){
-                //     alert("Message : "+resp.data);
-                //
-                // }else{
-                //     alert("Message : "+resp.data);
-                // }
+                console.log(resp[0]);
+                if (resp[0].status == 200) {
+                    alert("Message : "+resp[0].message);
+                    loadAllCustomers();
+
+                }else if(resp[0].status == 400){
+                    alert("Message : "+resp[0].message);
+
+                }else{
+                    alert("Message : "+resp[0].message);
+                }
             },
             error: function (ob, textStatus, error) {
                 console.log(ob);
@@ -272,25 +280,24 @@
         console.log(cusObj);
 
         $.ajax({
-            // url:"http://localhost:8080/filter/customer",
-            url:"http://localhost:8080/10_SpringWithMaven_war/api/v1/customer",
+            url:"http://localhost:8080/springpos/api/v2/customer",
             method:"PUT",
-
+            async:false,
             contentType:"application/json",
             data : JSON.stringify(cusObj),
 
             success:function(resp){
                 console.log(resp);
-                // if (resp.status == 200) {
-                //     alert("Message : "+resp.message);
-                //     loadAllCustomers();
-                //
-                // }else if(resp.status == 400){
-                //     alert("Message : "+resp.data);
-                //
-                // }else{
-                //     alert("Message : "+resp.data);
-                // }
+                if (resp[0].status == 200) {
+                    alert("Message : "+resp[0].message);
+                    loadAllCustomers();
+
+                }else if(resp[0].status == 400){
+                    alert("Message : "+resp[0].message);
+
+                }else{
+                    alert("Message : "+resp[0].message);
+                }
             },
 
             error: function (ob, textStatus, error) {
