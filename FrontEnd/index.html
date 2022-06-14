@@ -103,12 +103,12 @@
             url:"http://localhost:8080/springpos/api/v2/customer",
             method:"GET",
             success: function(resp){
-                // reply = resp;
+                reply = resp;
                 // console.log(resp);
                 // console.log(resp.data);
                 // console.log(resp[0].data);
 
-                resp[0].data.forEach(customer => {
+                resp.data.forEach(customer => {
                     let row =
                         `<tr>
                                 <td>${customer.id}</td>
@@ -142,23 +142,19 @@
             url:"http://localhost:8080/springpos/api/v2/customer/"+cusID,
             method:"GET",
             success: function(resp){
-                // reply = resp;
+                reply = resp;
                 // console.log(resp);
 
-
-                if (resp[0].status == 200) {
-                    customer = resp[0].data;
+                if (resp.status == 200) {
+                    customer = resp.data;
                     $("#txtCusID").val(customer.id);
                     $("#txtCusName").val(customer.name);
                     $("#txtCusAddress").val(customer.address);
                     $("#txtCusSalary").val(customer.salary);
                     selectRowOnClick();
-
-                }else {
-                    alert("Message : "+resp[0].message);
-
+                } else {
+                    alert("Message : "+resp.message+"\nStatus : "+resp.status);
                 }
-
             },
 
             error: function (ob, textStatus, error) {

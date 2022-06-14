@@ -6,11 +6,13 @@ import lk.ijse.spring.repo.CustomerRepo;
 import lk.ijse.spring.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
@@ -41,7 +43,8 @@ public class CustomerServiceImpl implements CustomerService {
                     c.getSalary()
             );
         } else {
-            throw new RuntimeException("No Such Customer...");
+            return null;
+//            throw new RuntimeException("No Such Customer...");
         }
     }
 
