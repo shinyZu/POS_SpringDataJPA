@@ -1,12 +1,8 @@
 package lk.ijse.spring.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jndi.JndiTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -19,12 +15,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import javax.sql.PooledConnection;
 
 @Configuration
 @EnableJpaRepositories(basePackages = "lk.ijse.spring.repo")
 @EnableTransactionManagement
-//@ImportResource()
 public class JPAConfig {
 
     @Bean
@@ -54,7 +48,7 @@ public class JPAConfig {
     }
 
     @Bean
-    public JpaVendorAdapter jpaVendorAdapter(){
+    public JpaVendorAdapter jpaVendorAdapter() {
         HibernateJpaVendorAdapter vendor = new HibernateJpaVendorAdapter();
         vendor.setDatabasePlatform("org.hibernate.dialect.MySQL8Dialect");
         vendor.setDatabase(Database.MYSQL);
@@ -64,8 +58,7 @@ public class JPAConfig {
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
+    public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
         return new JpaTransactionManager(emf);
     }
-
 }

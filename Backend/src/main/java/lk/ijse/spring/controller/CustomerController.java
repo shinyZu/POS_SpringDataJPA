@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.util.ArrayList;
 
 @RestController
@@ -21,9 +22,6 @@ public class CustomerController {
     @Autowired
     CustomerService customerService;
 
-    /*@Autowired
-    DataSource ds;
-*/
     @GetMapping
     public ResponseEntity<ResponseDTO> getAllCustomers() {
         if (customerService.getAllCustomers() != null) {

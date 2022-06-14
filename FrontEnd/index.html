@@ -11,11 +11,11 @@
         /*body{*/
         /*    background-color: #c8d6e5;*/
         /*}*/
-        #header{
+        #header {
             background-color: #273c75;
         }
 
-        #tbl-header{
+        #tbl-header {
             background-color: #34495e;
         }
 
@@ -45,16 +45,21 @@
                 </div>
                 <div class="mb-3">
                     <label for="txtCusAddress">Customer Address</label>
-                    <input class="form-control" id="txtCusAddress" placeholder="Customer Address" type="text" name="address">
+                    <input class="form-control" id="txtCusAddress" placeholder="Customer Address" type="text"
+                           name="address">
                 </div>
                 <div class="mb-3">
                     <label for="txtCusSalary">Customer Salary</label>
-                    <input class="form-control" id="txtCusSalary" placeholder="Customer Salary" type="text" name="salary">
+                    <input class="form-control" id="txtCusSalary" placeholder="Customer Salary" type="text"
+                           name="salary">
                 </div>
                 <div class="mb-3">
-                    <button id="btnSaveCustomer" type="button" class=" btn btn-primary text-white fw-bolder">Save</button>
-                    <button id="btnUpdateCustomer" type="button" class=" btn btn-warning text-white fw-bolder">Update</button>
-                    <button id="btnDeleteCustomer" type="button" class=" btn btn-danger text-white fw-bolder">Delete</button>
+                    <button id="btnSaveCustomer" type="button" class=" btn btn-primary text-white fw-bolder">Save
+                    </button>
+                    <button id="btnUpdateCustomer" type="button" class=" btn btn-warning text-white fw-bolder">Update
+                    </button>
+                    <button id="btnDeleteCustomer" type="button" class=" btn btn-danger text-white fw-bolder">Delete
+                    </button>
                     <button class="btn btn-success text-white" id="btnGetAll" type="button">Get All</button>
                     <button class="btn btn-secondary text-white" id="btnClear" type="button">Clear All</button>
                 </div>
@@ -83,11 +88,12 @@
 <script>
 
     var reply;
-    var response;
     var resTxt;
     var customer;
 
-    loadAllCustomers();
+    (function () {
+        loadAllCustomers();
+    })();
 
     function clearFields() {
         $("#searchCusID").val("");
@@ -100,9 +106,9 @@
     function loadAllCustomers() {
         $("#tblCustomer tbody").empty();
         $.ajax({
-            url:"http://localhost:8080/springpos/api/v2/customer",
-            method:"GET",
-            success: function(resp){
+            url: "http://localhost:8080/springpos/api/v2/customer",
+            method: "GET",
+            success: function (resp) {
                 reply = resp;
 
                 resp.data.forEach(customer => {
@@ -134,11 +140,11 @@
         clearFields();
     });
 
-    function searchCustomer(cusID){
+    function searchCustomer(cusID) {
         $.ajax({
-            url:"http://localhost:8080/springpos/api/v2/customer/"+cusID,
-            method:"GET",
-            success: function(resp){
+            url: "http://localhost:8080/springpos/api/v2/customer/" + cusID,
+            method: "GET",
+            success: function (resp) {
                 reply = resp;
                 // console.log(resp);
 
@@ -151,7 +157,7 @@
                     selectRowOnClick();
                 } else {
                     clearFields();
-                    alert("Message : "+resp.message);
+                    alert("Message : " + resp.message);
                 }
             },
             error: function (ob, textStatus, error) {
@@ -161,10 +167,10 @@
     }
 
     $("#searchCusID").on("keypress", function (e) {
-       if (e.key === "Enter"){
-           var cusID = $("#searchCusID").val();
-           searchCustomer(cusID);
-       }
+        if (e.key === "Enter") {
+            var cusID = $("#searchCusID").val();
+            searchCustomer(cusID);
+        }
     });
 
     $("#btnSearch").click(function (e) {
@@ -182,16 +188,16 @@
         // var salary = ($("#txtCusSalary").val());
 
         $.ajax({
-            url:"http://localhost:8080/springpos/api/v2/customer",
-            method:"POST",
-            data:formData,
-            success:function(resp){
+            url: "http://localhost:8080/springpos/api/v2/customer",
+            method: "POST",
+            data: formData,
+            success: function (resp) {
                 reply = resp;
                 if (resp.status === 201) {
-                    alert("Message : "+resp.message);
+                    alert("Message : " + resp.message);
                     loadAllCustomers();
-                }else{
-                    alert("Message : "+resp.message);
+                } else {
+                    alert("Message : " + resp.message);
                 }
             },
             error: function (ob, textStatus, error) {
@@ -204,20 +210,20 @@
         var cusID = $("#txtCusID").val();
 
         $.ajax({
-            url:"http://localhost:8080/springpos/api/v2/customer?id="+cusID,
-            method:"DELETE",
+            url: "http://localhost:8080/springpos/api/v2/customer?id=" + cusID,
+            method: "DELETE",
 
-            success:function (resp) {
+            success: function (resp) {
                 console.log(resp);
                 if (resp.status === 200) {
-                    alert("Message : "+resp.message);
+                    alert("Message : " + resp.message);
                     loadAllCustomers();
 
-                }else if(resp.status === 400){
-                    alert("Message : "+resp.message);
+                } else if (resp.status === 400) {
+                    alert("Message : " + resp.message);
 
-                }else{
-                    alert("Message : "+resp.message);
+                } else {
+                    alert("Message : " + resp.message);
                 }
             },
             error: function (ob, textStatus, error) {
@@ -253,23 +259,23 @@
         console.log(cusObj);
 
         $.ajax({
-            url:"http://localhost:8080/springpos/api/v2/customer",
-            method:"PUT",
-            async:false,
-            contentType:"application/json",
-            data : JSON.stringify(cusObj),
+            url: "http://localhost:8080/springpos/api/v2/customer",
+            method: "PUT",
+            async: false,
+            contentType: "application/json",
+            data: JSON.stringify(cusObj),
 
-            success:function(resp){
+            success: function (resp) {
                 console.log(resp);
                 if (resp.status === 200) {
-                    alert("Message : "+resp.message);
+                    alert("Message : " + resp.message);
                     loadAllCustomers();
 
-                }else if(resp.status === 400){
-                    alert("Message : "+resp.message);
+                } else if (resp.status === 400) {
+                    alert("Message : " + resp.message);
 
-                }else{
-                    alert("Message : "+resp.message);
+                } else {
+                    alert("Message : " + resp.message);
                 }
             },
             error: function (ob, textStatus, error) {
