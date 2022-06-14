@@ -104,9 +104,6 @@
             method:"GET",
             success: function(resp){
                 reply = resp;
-                // console.log(resp);
-                // console.log(resp.data);
-                // console.log(resp[0].data);
 
                 resp.data.forEach(customer => {
                     let row =
@@ -145,7 +142,7 @@
                 reply = resp;
                 // console.log(resp);
 
-                if (resp.status == 200) {
+                if (resp.status === 200) {
                     customer = resp.data;
                     $("#txtCusID").val(customer.id);
                     $("#txtCusName").val(customer.name);
@@ -153,41 +150,24 @@
                     $("#txtCusSalary").val(customer.salary);
                     selectRowOnClick();
                 } else {
-                    alert("Message : "+resp.message+"\nStatus : "+resp.status);
+                    clearFields();
+                    alert("Message : "+resp.message);
                 }
             },
-
             error: function (ob, textStatus, error) {
                 // console.log(ob);
             }
-        });;
+        });
     }
 
-    /*$("#btnSearch").keyup(function (e) {
-        var cusID = $("#searchCusID").val();
-
-        $("#btnSearch").off("click");
-        $("#btnSearch").click(function (e) {
-            searchCustomer(cusID);
-
-        });
-
-        if (e.key == "Enter") {
-            e.preventDefault();
-            searchCustomer(cusID);
-        }
-    });*/
-
     $("#searchCusID").on("keypress", function (e) {
-        // $("#btnSearch").off("click");
-       if (e.key == "Enter"){
+       if (e.key === "Enter"){
            var cusID = $("#searchCusID").val();
            searchCustomer(cusID);
        }
     });
 
     $("#btnSearch").click(function (e) {
-        // $("#btnSearch").off("keypress");
         var cusID = $("#searchCusID").val();
         searchCustomer(cusID);
     });
@@ -196,26 +176,23 @@
     $("#btnSaveCustomer").click(function (e) {
         var formData = $("#customer_form").serialize();
 
-        var id = $("#txtCusID").val();
-        var name = $("#txtCusName").val();
-        var address = $("#txtCusAddress").val();
-        var salary = ($("#txtCusSalary").val());
+        // var id = $("#txtCusID").val();
+        // var name = $("#txtCusName").val();
+        // var address = $("#txtCusAddress").val();
+        // var salary = ($("#txtCusSalary").val());
 
         $.ajax({
             url:"http://localhost:8080/springpos/api/v2/customer",
             method:"POST",
             data:formData,
             success:function(resp){
-                response = resp[0];
-                if (response.status == 201) {
-                    alert("Message : "+response.message+"\nStatus : "+response.status);
+                reply = resp;
+                if (resp.status === 201) {
+                    alert("Message : "+resp.message);
                     loadAllCustomers();
-
+                }else{
+                    alert("Message : "+resp.message);
                 }
-                else{
-                    alert("Message : "+response.message+"\nStatus : "+response.status);
-                }
-
             },
             error: function (ob, textStatus, error) {
                 // console.log(ob); 
@@ -231,16 +208,16 @@
             method:"DELETE",
 
             success:function (resp) {
-                console.log(resp[0]);
-                if (resp[0].status == 200) {
-                    alert("Message : "+resp[0].message);
+                console.log(resp);
+                if (resp.status === 200) {
+                    alert("Message : "+resp.message);
                     loadAllCustomers();
 
-                }else if(resp[0].status == 400){
-                    alert("Message : "+resp[0].message);
+                }else if(resp.status === 400){
+                    alert("Message : "+resp.message);
 
                 }else{
-                    alert("Message : "+resp[0].message);
+                    alert("Message : "+resp.message);
                 }
             },
             error: function (ob, textStatus, error) {
@@ -284,18 +261,17 @@
 
             success:function(resp){
                 console.log(resp);
-                if (resp[0].status == 200) {
-                    alert("Message : "+resp[0].message);
+                if (resp.status === 200) {
+                    alert("Message : "+resp.message);
                     loadAllCustomers();
 
-                }else if(resp[0].status == 400){
-                    alert("Message : "+resp[0].message);
+                }else if(resp.status === 400){
+                    alert("Message : "+resp.message);
 
                 }else{
-                    alert("Message : "+resp[0].message);
+                    alert("Message : "+resp.message);
                 }
             },
-
             error: function (ob, textStatus, error) {
                 // console.log(ob);
             }
