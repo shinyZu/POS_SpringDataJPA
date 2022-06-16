@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Java EE with AJAX</title>
+    <title>Spring with AJAX</title>
     <link rel="stylesheet" href="assets/css/normalize.css">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <style>
@@ -148,7 +148,7 @@
                 reply = resp;
                 // console.log(resp);
 
-                if (resp.status === 200) {
+                if (resp.code === 200) {
                     customer = resp.data;
                     $("#txtCusID").val(customer.id);
                     $("#txtCusName").val(customer.name);
@@ -193,7 +193,7 @@
             data: formData,
             success: function (resp) {
                 reply = resp;
-                if (resp.status === 201) {
+                if (resp.code === 201) {
                     alert("Message : " + resp.message);
                     loadAllCustomers();
                 } else {
@@ -215,7 +215,7 @@
 
             success: function (resp) {
                 console.log(resp);
-                if (resp.status === 200) {
+                if (resp.code === 200) {
                     alert("Message : " + resp.message);
                     loadAllCustomers();
 
@@ -261,13 +261,12 @@
         $.ajax({
             url: "http://localhost:8080/springpos/api/v2/customer",
             method: "PUT",
-            async: false,
             contentType: "application/json",
             data: JSON.stringify(cusObj),
 
             success: function (resp) {
                 console.log(resp);
-                if (resp.status === 200) {
+                if (resp.code === 200) {
                     alert("Message : " + resp.message);
                     loadAllCustomers();
 

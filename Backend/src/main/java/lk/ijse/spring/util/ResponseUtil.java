@@ -1,23 +1,17 @@
 package lk.ijse.spring.util;
 
-import lk.ijse.spring.dto.ResponseDTO;
-import org.springframework.http.HttpStatus;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import java.util.ArrayList;
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@ToString
 public class ResponseUtil {
+    private int code;
+    private String message;
+    private Object data;
 
-    public static ArrayList<ResponseDTO> generateResponse(int status, String message) {
-        System.out.println(status+" "+message);
-        ArrayList<ResponseDTO> response = new ArrayList<>();
-        //response.add(new ResponseDTO(status, message));
-        return response;
-    }
-
-    public static ArrayList<ResponseDTO> generateResponse(int status, String message, Object data) {
-        System.out.println(status+" "+message+" "+data);
-        ArrayList<ResponseDTO> response = new ArrayList<>();
-        response.add(new ResponseDTO(status, message, data));
-        return response;
-    }
 }
